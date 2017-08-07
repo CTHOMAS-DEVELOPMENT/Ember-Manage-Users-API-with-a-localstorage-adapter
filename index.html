@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ember.js • Web Development API Task</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+  <script type="text/x-handlebars" data-template-name="users/index">
+  <ul id="user-list">
+    {{#each user in model itemController="user"}}
+      <li {{bind-attr class="user.isEditing:editing"}}>
+        {{#if user.isEditing}}
+          
+		  <table>
+			<tr>
+				<td>Name:</td><td>{{edit-user class="editsmall" value=user.forename}}</td>
+			</tr>
+			<tr>
+				<td>Surname:</td><td>{{edit-user class="editsmall" value=user.surname}}</td>
+			</tr>
+			<tr>
+				<td>Email:</td><td>{{edit-user class="editsmall" value=user.email}}</td>
+			</tr>
+			<tr>
+				<td><small>Created:</small></td><td><small>{{user.created}}</small></td>
+			</tr>
+			<tr>
+				<td><small>Id:</small></td><td><small>{{user.id}}</small></td>
+				<td></td><td><button {{action "acceptChanges"}} class="save">✔</button></td>
+			</tr>
+			</table>
+        {{else}}
+          <label {{action "editUser" on="doubleClick"}}>{{user.forename}}&nbsp;{{user.surname}}</label>
+		  <button {{action "removeUser"}} class="destroy"></button>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+	</script>
+  
+    <script type="text/x-handlebars" data-template-name="users">
+    <section>
+      <header>
+ 		
+		<h1>Manage Users</h1>
+		
+		{{#if newEntry}}
+		{{edit-user id="user_forename" class="newuser" value=user_forename placeholder="Enter a forename" action="initialise"}}
+		{{edit-user id="user_surname" class="newuser" value=user_surname placeholder="Enter a surname" action="initialise"}}
+		{{edit-user id="user_email" class="newuser" value=user_email placeholder="Enter an email and press enter" action="createUser"}}
+		<div class="newuser newusererror"{{bind-attr class="isError:newusershow"}}>{{errorMessage}}</div>
+		{{else}}
+			<label class="newuser">Add a new user{{input type="checkbox" checked=newEntry}}</label>
+		{{/if}}
+      </header>
+      <section id="main">
+        {{outlet}}
+      </section>
+      <footer id="footer">
+ 		<table>
+		<tr>
+			<td>{{#link-to "users.index" class="newuser" }}All Users{{/link-to}}</td>
+			<td>{{input type="text" class="newuser" id="user_search" placeholder="Search by surname" value=userSearch action="getuserlist"}}</td>
+			<td>{{#link-to "users.search" }}<image src="images/search.png"/>{{/link-to}}</td>
+		</tr>
+		</table>
+      </footer>
+    </section>
+
+    <footer id="info">
+      <p>Double-click to edit a user</p>
+    </footer>
+  </script>
+  <script src="js/libs/jquery-1.11.2.min.js"></script>
+  <script src="js/libs/handlebars-v1.3.0.js"></script>
+  <script src="js/libs/ember.js"></script>
+  <script src="js/libs/ember-data.js"></script>	
+  <script src="js/libs/localstorage_adapter.js"></script>
+  <script src="node_modules/moment/moment.js"></script>
+  <script src="js/application.js"></script>	
+  <script src="js/router.js"></script>	
+  <script src="js/models/user.js"></script>
+  <script src="js/controllers/users_controller.js"></script>
+  <script src="js/controllers/user_controller.js"></script>
+  <script src="js/views/edit_user_view.js"></script>
+  
+  </body>
+</html>
