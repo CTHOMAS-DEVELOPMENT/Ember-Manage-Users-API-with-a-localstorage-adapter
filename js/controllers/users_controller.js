@@ -1,13 +1,13 @@
 Users.UsersController = Ember.ArrayController.extend({
   actions: {
-	createUser: function() {
-	  
+	createUser: function() {	  
       // Get the user forename set by the "user_forename" text field
       let forename = 	this.get('user_forename');
 	  let surname = 	this.get('user_surname');
 	  let email = 		this.get('user_email');
 	  let created = 	moment().format('MMMM Do YYYY, h:mm:ss a');
-
+	  this.set("isError",false);
+	  
 	  if(!Users.ValidateInput(forename))
       {
 		this.set("isError",true);
@@ -49,10 +49,13 @@ Users.UsersController = Ember.ArrayController.extend({
 	{
 		this.transitionToRoute('/search');
 	},
+	showUserForm: function() {
+		this.set("newEntry",true);
+	},
 	initialise: function() {
 		this.set("isError",false);
 	}
-  },
+	},
     errorMessage: "",
 	isError: false,
 	newEntry: false,

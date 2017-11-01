@@ -1,79 +1,129 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Ember.js • Web Development API Task</title>
-    <link rel="stylesheet" href="css/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Rapidly build clever CRUD forms">  
+    <title>Ember.js • Web Development Smart CRUD Data Entry</title>
+	<link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="node_modules/bootstrap/dist/css/bootstrap.min.css.map" rel="stylesheet" />
+	<link rel="icon" type="image/png" href="favicon.png"> 
   </head>
   <body>
   <script type="text/x-handlebars" data-template-name="users/index">
-  <ul id="user-list">
+  <table class="table table-striped">
+	{{#if user.isEditing}}
+		<thead>
+		<tr>
+			<th>Field</th>
+			<th></th>
+		</tr>
+		</thead>
+	
+	{{else}}
+		<thead>
+		<tr>
+			<th>Full Name</th>
+			<th>Email</th>
+			<th>Edit User</th>
+			<th>Remove</th>
+		</tr>
+		</thead>
+	{{/if}}
+	<tbody>
+
     {{#each user in model itemController="user"}}
-      <li {{bind-attr class="user.isEditing:editing"}}>
         {{#if user.isEditing}}
-          
-		  <table>
-			<tr>
-				<td>Name:</td><td>{{edit-user class="editsmall" value=user.forename}}</td>
+ 			<tr>
+				<td>Name:</td><td>{{edit-user value=user.forename class="form-control"}}</td>
 			</tr>
 			<tr>
-				<td>Surname:</td><td>{{edit-user class="editsmall" value=user.surname}}</td>
+				<td>Surname:</td><td>{{edit-user value=user.surname class="form-control"}}</td>
 			</tr>
 			<tr>
-				<td>Email:</td><td>{{edit-user class="editsmall" value=user.email}}</td>
+				<td>Email:</td><td>{{edit-user value=user.email class="form-control"}}</td>
 			</tr>
 			<tr>
-				<td><small>Created:</small></td><td><small>{{user.created}}</small></td>
+				<td><small>Created:{{user.created}}</small></td><td><button {{action "acceptChanges"}} class="btn btn-primary btn-sm">Save and Close</button></td>
 			</tr>
-			<tr>
-				<td><small>Id:</small></td><td><small>{{user.id}}</small></td>
-				<td></td><td><button {{action "acceptChanges"}} class="save">✔</button></td>
-			</tr>
-			</table>
         {{else}}
-          <label {{action "editUser" on="doubleClick"}}>{{user.forename}}&nbsp;{{user.surname}}</label>
-		  <button {{action "removeUser"}} class="destroy"></button>
+			<tr>
+				<td style="vertical-align:middle">
+				<label {{action "editUser" on="doubleClick"}}>{{user.forename}}&nbsp;{{user.surname}}</label>
+				</td>
+				<td style="vertical-align:middle">
+				<label {{action "editUser" on="doubleClick"}}>{{user.email}}</label>
+				</td>
+				<td>
+				<button {{action "editUser"}} class="btn btn-primary btn-sm">Edit user</button>
+				</td>
+				<td>
+				<button {{action "removeUser"}} class="btn btn-danger btn-sm">Remove</button>
+				</td>
+			</tr>
         {{/if}}
-      </li>
+   
     {{/each}}
-  </ul>
+	</tbody>
+	</table>
 	</script>
   
     <script type="text/x-handlebars" data-template-name="users">
-    <section>
-      <header>
- 		
-		<h1>Manage Users</h1>
-		
-		{{#if newEntry}}
-		{{edit-user id="user_forename" class="newuser" value=user_forename placeholder="Enter a forename" action="initialise"}}
-		{{edit-user id="user_surname" class="newuser" value=user_surname placeholder="Enter a surname" action="initialise"}}
-		{{edit-user id="user_email" class="newuser" value=user_email placeholder="Enter an email and press enter" action="createUser"}}
-		<div class="newuser newusererror"{{bind-attr class="isError:newusershow"}}>{{errorMessage}}</div>
-		{{else}}
-			<label class="newuser">Add a new user{{input type="checkbox" checked=newEntry}}</label>
-		{{/if}}
-      </header>
-      <section id="main">
-        {{outlet}}
-      </section>
-      <footer id="footer">
- 		<table>
-		<tr>
-			<td>{{#link-to "users.index" class="newuser" }}All Users{{/link-to}}</td>
-			<td>{{input type="text" class="newuser" id="user_search" placeholder="Search by surname" value=userSearch action="getuserlist"}}</td>
-			<td>{{#link-to "users.search" }}<image src="images/search.png"/>{{/link-to}}</td>
-		</tr>
-		</table>
-      </footer>
-    </section>
 
-    <footer id="info">
-      <p>Double-click to edit a user</p>
-    </footer>
+   
+ 		<div class="container">
+			<div class="row">   
+				<div class="col-xs-12" align="center">
+					<h1>Manage Users</h1>
+				</div>
+			</div>
+			<div class="row"> 
+				<div class="col-xs-12" align="center">
+				{{#if newEntry}}
+					<form {{action 'createUser' on='submit'}}>
+					<div class="form-group">
+						{{edit-user id="user_forename" value=user_forename placeholder="Enter a forename" class="form-control" aria-describedby="forenameHelp"  action="initialise" autofocus="autofocus"}}
+						<small hidden id="forenameHelp" class="form-text text-muted">Enter a forename</small>
+					</div>
+					<div class="form-group">
+						{{edit-user id="user_surname"  value=user_surname placeholder="Enter a surname" class="form-control" aria-describedby="surnameHelp"  action="initialise"}}
+						<small hidden id="surnameHelp" class="form-text text-muted">Enter a surname</small>
+					</div>			
+					<div class="form-group">
+						{{edit-user id="user_email"  value=user_email placeholder="Enter an email and press enter or the \"Save User\" button" class="form-control" aria-describedby="emailHelp"  action="createUser"}}
+						<small hidden id="emailHelp" class="form-text text-muted">Enter an email</small>
+					</div>
+					<button type="submit" class="btn btn-primary" >Save User</button><div>{{errorMessage}}</div>
+					</form>				
+
+				
+				{{else}}
+				
+					<button {{action "showUserForm"}} class="btn btn-primary btn-sm">Add a new user</button>
+					
+				{{/if}}
+				</div>
+			</div>
+			<div class="row"> 
+				<div class="col-xs-12" align="center" id="main">	
+					{{outlet}}		
+				</div>
+			</div>
+			<div class="row">   
+				<div class="col-xs-12" align="center">
+				<form action="" class="form-inline">
+					{{input type="text" id="user_search" placeholder="Search for a user" value=userSearch action="getuserlist" autofocus="autofocus" class="form-control mr-sm-2 mb-2 mb-sm-0"}}
+					{{#link-to 'users.search' class="btn btn-danger btn-sm"}} Search {{/link-to}} 
+					{{#link-to 'users.index' class="btn btn-primary btn-sm"}} Show All Users {{/link-to}}
+				</form>
+				</div>
+			</div>
+		</div>
+
+
   </script>
-  <script src="js/libs/jquery-1.11.2.min.js"></script>
-  <script src="js/libs/handlebars-v1.3.0.js"></script>
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/handlebars/dist/handlebars.js"></script>
   <script src="js/libs/ember.js"></script>
   <script src="js/libs/ember-data.js"></script>	
   <script src="js/libs/localstorage_adapter.js"></script>
@@ -84,6 +134,6 @@
   <script src="js/controllers/users_controller.js"></script>
   <script src="js/controllers/user_controller.js"></script>
   <script src="js/views/edit_user_view.js"></script>
-  
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js" ></script>
   </body>
 </html>
